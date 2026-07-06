@@ -1,6 +1,7 @@
 // db.js — เชื่อมต่อ PostgreSQL โดยอ่านค่าทั้งหมดจาก Environment Variables
 // ห้าม hardcode รหัสผ่านหรือค่าเชื่อมต่อฐานข้อมูลในไฟล์นี้เด็ดขาด
 const { Pool } = require('pg');
+require('dotenv').config();
 
 const pool = new Pool({
   host: process.env.DB_HOST || 'localhost',
@@ -10,8 +11,23 @@ const pool = new Pool({
   database: process.env.DB_NAME || 'compuroom',
 });
 
+const waitForDatabase = async (retries = 15, delayMs = 1000) => {
+  for (let attempt = 1; attempt <= retries; attempt += 1) {
+    try {
+      await pool.query('SELECT 1');
+      return;
+    } catch (err) {
+      if (attempt === retries) {
+        throw err;
+      }
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+};
+
 // สร้างตาราง computers อัตโนมัติถ้ายังไม่มี (ทำให้ข้อมูล persist ผ่าน volume ของ db)
-const initTable = async () => {
+const initializeDatabase = async () => {
+  await waitForDatabase();
   await pool.query(`
     CREATE TABLE IF NOT EXISTS computers (
       id SERIAL PRIMARY KEY,
@@ -27,8 +43,19 @@ const initTable = async () => {
   `);
 };
 
-initTable().catch((err) => {
-  console.error('Failed to initialize computers table:', err.message);
-});
+let initializationPromise = null;
+
+const startupDatabase = () => {
+  if (!initializationPromise) {
+    initializationPromise = initializeDatabase().catch((err) => {
+      console.error('Failed to initialize computers table:', err.message);
+      throw err;
+    });
+  }
+  return initializationPromise;
+};
+
+startupDatabase();
 
 module.exports = pool;
+module.exports.initializeDatabase = startupDatabase;
