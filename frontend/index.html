@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ระบบบันทึกข้อมูลเครื่องคอมพิวเตอร์ประจำห้อง</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', 'TH Sarabun New', sans-serif;
+    max-width: 960px;
+    margin: 40px auto;
+    padding: 0 20px;
+    background: #f5f6fa;
+    color: #222;
+  }
+  header { text-align: center; margin-bottom: 24px; }
+  header h1 { color: #2c3e50; margin-bottom: 4px; }
+  header p { color: #666; margin: 0; }
+  form {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  form input, form select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  form button {
+    grid-column: span 2;
+    padding: 12px;
+    background: #2c3e50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+  }
+  form button:hover { background: #1a252f; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 24px;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  th, td {
+    border: 1px solid #e0e0e0;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 14px;
+  }
+  th { background: #2c3e50; color: #fff; }
+  tr:nth-child(even) { background: #fafafa; }
+  .actions button {
+    margin-right: 6px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  .btn-edit { background: #3498db; color: #fff; }
+  .btn-delete { background: #e74c3c; color: #fff; }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #fff;
+  }
+  .badge-active { background: #27ae60; }
+  .badge-repair { background: #f39c12; }
+  .badge-retired { background: #95a5a6; }
+  footer {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 13px;
+    color: #666;
+    border-top: 1px solid #ddd;
+    padding-top: 16px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>💻 ระบบบันทึกข้อมูลเครื่องคอมพิวเตอร์ประจำห้อง</h1>
+  <p>รหัสโปรเจกต์: compuroom | DevOps Mini Project</p>
+</header>
+
+<form id="computer-form">
+  <input type="hidden" id="edit-id" />
+  <input type="text" id="asset_code" placeholder="รหัสครุภัณฑ์ (asset_code)" required />
+  <input type="text" id="brand_model" placeholder="ยี่ห้อและรุ่น (brand_model)" required />
+  <input type="text" id="cpu" placeholder="สเปก CPU" required />
+  <input type="number" id="ram_gb" placeholder="RAM (GB)" min="1" required />
+  <input type="text" id="room" placeholder="ห้องที่ติดตั้ง" required />
+  <select id="status">
+    <option value="ใช้งาน">ใช้งาน</option>
+    <option value="ส่งซ่อม">ส่งซ่อม</option>
+    <option value="จำหน่าย">จำหน่าย</option>
+  </select>
+  <button type="submit" id="submit-btn">➕ บันทึกข้อมูล</button>
+</form>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>รหัสครุภัณฑ์</th>
+      <th>ยี่ห้อ/รุ่น</th>
+      <th>CPU</th>
+      <th>RAM (GB)</th>
+      <th>ห้อง</th>
+      <th>สถานะ</th>
+      <th>จัดการ</th>
+    </tr>
+  </thead>
+  <tbody id="computer-list"></tbody>
+</table>
+
+<footer>
+  จัดทำโดย <strong>นาย ดุจคณิต ราชอักษร</strong> | รหัสนักศึกษา <strong>68319010019</strong> | กลุ่มเรียน ปวส2/2<br />
+  วิชา DevOps 30901-2008 — วิทยาลัยเทคนิคเลย
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
