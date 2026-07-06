@@ -4,9 +4,19 @@ const pool = require('./db');
 
 const app = express();
 const VERSION = '1.0.0';
+const initializeDatabase = pool.initializeDatabase || (() => Promise.resolve());
 
 app.use(cors());
 app.use(express.json());
+app.use(async (req, res, next) => {
+  try {
+    await initializeDatabase();
+    next();
+  } catch (err) {
+    console.error('Database initialization failed:', err.message);
+    res.status(503).json({ error: 'Database unavailable' });
+  }
+});
 
 // GET /health — ตรวจสอบสถานะระบบ
 app.get('/health', (req, res) => {
