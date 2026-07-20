@@ -104,7 +104,7 @@ async function editComputer(id) {
 }
 
 async function deleteComputer(id) {
-  if (!window.confirm('ยืนยันการลบข้อมูลนี้?')) return;
+  if (!window.confirm('ยืนยันการลบข้อมูลนี?')) return;
   await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
   fetchComputers();
 }
